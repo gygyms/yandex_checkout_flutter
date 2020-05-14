@@ -92,7 +92,8 @@ class YandexCheckoutFlutter {
             gatewayId = map["gatewayId"] as String?,
             customReturnUrl = map["customReturnUrl"] as String?,
             userPhoneNumber = map["userPhoneNumber"] as String?,
-            googlePayParameters = parseGooglePayParameters(map) ?: GooglePayParameters()
+            googlePayParameters = parseGooglePayParameters(map) ?: GooglePayParameters(),
+                savePaymentMethod = SavePaymentMethod.OFF
         )
     }
 
