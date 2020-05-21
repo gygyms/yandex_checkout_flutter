@@ -30,6 +30,8 @@ flutter:
       android:
         package: com.example.yandex_checkout
         pluginClass: YandexCheckoutPlugin
+      ios:
+        pluginClass: SwiftYandexPaymentPlugin
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
