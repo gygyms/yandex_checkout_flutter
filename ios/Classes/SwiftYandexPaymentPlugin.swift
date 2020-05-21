@@ -49,20 +49,23 @@ public class SwiftYandexPaymentPlugin: NSObject, FlutterPlugin, TokenizationModu
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     var data: [String: Any] = [:]
-    var args:Dictionary = call.arguments as! Dictionary<String, String>
+    var args:Dictionary = call.arguments as! Dictionary<String, Any?>
     data["paymentToken"]="iOS " + UIDevice.current.systemVersion;
     data["paymentMethodType"]="BANK_CARD";
-    let clientApplicationKey = args["clientApplicationKey"]
+    let clientApplicationKey = args["clientApplicationKey"] as! String
     let amount = Amount(value: 999.99, currency: .rub)
     let tokenizationModuleInputData =
-        TokenizationModuleInputData(clientApplicationKey: clientApplicationKey!,
-                                          shopName: "Космические объекты",
-                                          purchaseDescription: """
-                                                               Комета повышенной яркости, период обращения — 112 лет
-                                                               """,
-                                          amount: amount,
-                                          isLoggingEnabled: true,
-                                          savePaymentMethod: .on)
+            TokenizationModuleInputData(clientApplicationKey: clientApplicationKey,
+                                              shopName: "Космические объекты",
+                                              purchaseDescription: """
+                                                                   Комета повышенной яркости, период обращения — 112 лет
+                                                                   """,
+                                              amount: amount,
+                                              tokenizationSettings: TokenizationSettings(
+                                                paymentMethodTypes: [PaymentMethodTypes.bankCard,PaymentMethodTypes.applePay], showYandexCheckoutLogo: true
+                                                    ),
+                                              isLoggingEnabled: true,
+                                              savePaymentMethod: .on)
     let inputData: TokenizationFlow = .tokenization(tokenizationModuleInputData)
     let viewController = TokenizationAssembly.makeModule(inputData: inputData,
                                                          moduleOutput: self)
