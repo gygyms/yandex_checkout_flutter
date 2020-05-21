@@ -15,7 +15,7 @@ A Yandex Payment plugin for Flutter.
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
-
+  s.vendored_frameworks = 'Frameworks/TMXProfiling.framework', 'Frameworks/TMXProfilingConnections.framework'
   s.ios.deployment_target = '8.0'
 end
 

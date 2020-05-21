@@ -9,10 +9,10 @@ class Checkout {
   static Future<TokenizationResult> createTokenize(
     PaymentParameters paymentParameters
   ) {
-    if (defaultTargetPlatform != TargetPlatform.android) {
+    /*if (defaultTargetPlatform != TargetPlatform.android) {
       throw UnimplementedError(
         'The yandex payment flutter plugin doesn\'t implemented for $defaultTargetPlatform yet');
-    }
+    }*/
 
     return platform.invokeMethod('showYandexPayment', paymentParameters.toMap())
       .then((r) => TokenizationResult.fromMap(r));

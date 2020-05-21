@@ -77,7 +77,6 @@
 				49A460F4775D03406ABCB4A2 /* Pods-Runner.release.xcconfig */,
 				EE52DB8F5FE5DFB96558FE46 /* Pods-Runner.profile.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -262,6 +261,8 @@
 				"${PODS_ROOT}/YandexMobileMetrica/dynamic/YandexMobileMetrica.framework",
 				"${PODS_ROOT}/YandexMobileMetrica/dynamic/YandexMobileMetricaCrashes.framework",
 				"${BUILT_PRODUCTS_DIR}/YandexMoneyCoreApi/YandexMoneyCoreApi.framework",
+				"${PODS_ROOT}/../.symlinks/plugins/yandex_checkout/ios/Frameworks/TMXProfiling.framework",
+				"${PODS_ROOT}/../.symlinks/plugins/yandex_checkout/ios/Frameworks/TMXProfilingConnections.framework",
 				"${BUILT_PRODUCTS_DIR}/yandex_checkout/yandex_checkout.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -277,6 +278,8 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YandexMobileMetrica.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YandexMobileMetricaCrashes.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/YandexMoneyCoreApi.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TMXProfiling.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TMXProfilingConnections.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/yandex_checkout.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
