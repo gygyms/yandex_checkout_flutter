@@ -26,21 +26,25 @@ extension UIViewController: TokenizationModuleOutput {
   }
 }
 public class SwiftYandexPaymentPlugin: NSObject, FlutterPlugin, TokenizationModuleOutput {
+    var flutterResult:FlutterResult?
     public func didFinish(on module: TokenizationModuleInput, with error: YandexCheckoutPaymentsError?) {
-        
+
     }
-    
+
     public func didSuccessfullyPassedCardSec(on module: TokenizationModuleInput) {
-        
+
     }
-    
+
     public func tokenizationModule(_ module: TokenizationModuleInput, didTokenize token: Tokens, paymentMethodType: PaymentMethodType) {
-        
+        var dictionary:Dictionary<String,String> = [:]
+        dictionary["paymentMethodType"] = paymentMethodType.rawValue
+        dictionary["paymentToken"] = token.paymentToken
+        flutterResult!(dictionary)
     }
-    
-  
-    
-    
+
+
+
+
   public static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(name: "example.com/yandex", binaryMessenger: registrar.messenger())
     let instance = SwiftYandexPaymentPlugin()
@@ -48,21 +52,43 @@ public class SwiftYandexPaymentPlugin: NSObject, FlutterPlugin, TokenizationModu
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+    flutterResult = result
     var data: [String: Any] = [:]
     var args:Dictionary = call.arguments as! Dictionary<String, Any?>
     data["paymentToken"]="iOS " + UIDevice.current.systemVersion;
     data["paymentMethodType"]="BANK_CARD";
     let clientApplicationKey = args["clientApplicationKey"] as! String
+    let shopName = args["shopName"] as? String ?? ""
+    let purchaseDescription = args["title"] as? String ?? ""
+    let paymentMethods = args["paymentMethodTypes"] as! Array<String>
+    var paymentMethodTypes:PaymentMethodTypes = []
+    for paymentMethod in paymentMethods {
+        switch paymentMethod {
+        case "YANDEX_MONEY":
+            paymentMethodTypes.insert(PaymentMethodTypes.yandexMoney)
+            break
+        case "BANK_CARD":
+            paymentMethodTypes.insert(PaymentMethodTypes.bankCard)
+            break
+        case "GOOGLE_PAY":
+            paymentMethodTypes.insert(PaymentMethodTypes.applePay)
+            break
+        case "APPLE_PAY":
+            paymentMethodTypes.insert(PaymentMethodTypes.applePay)
+            break
+        default: break
+
+        }
+    }
+
     let amount = Amount(value: 999.99, currency: .rub)
     let tokenizationModuleInputData =
             TokenizationModuleInputData(clientApplicationKey: clientApplicationKey,
-                                              shopName: "Космические объекты",
-                                              purchaseDescription: """
-                                                                   Комета повышенной яркости, период обращения — 112 лет
-                                                                   """,
+                                              shopName: shopName,
+                                              purchaseDescription: purchaseDescription,
                                               amount: amount,
                                               tokenizationSettings: TokenizationSettings(
-                                                paymentMethodTypes: [PaymentMethodTypes.bankCard,PaymentMethodTypes.applePay], showYandexCheckoutLogo: true
+                                                paymentMethodTypes: paymentMethodTypes, showYandexCheckoutLogo: true
                                                     ),
                                               isLoggingEnabled: true,
                                               savePaymentMethod: .on)
