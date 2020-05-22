@@ -27,8 +27,12 @@ extension UIViewController: TokenizationModuleOutput {
 }
 public class SwiftYandexPaymentPlugin: NSObject, FlutterPlugin, TokenizationModuleOutput {
     var flutterResult:FlutterResult?
+    var viewController:UIViewController?
     public func didFinish(on module: TokenizationModuleInput, with error: YandexCheckoutPaymentsError?) {
-
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.viewController!.dismiss(animated: true)
+        }
     }
 
     public func didSuccessfullyPassedCardSec(on module: TokenizationModuleInput) {
@@ -36,6 +40,10 @@ public class SwiftYandexPaymentPlugin: NSObject, FlutterPlugin, TokenizationModu
     }
 
     public func tokenizationModule(_ module: TokenizationModuleInput, didTokenize token: Tokens, paymentMethodType: PaymentMethodType) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.viewController!.dismiss(animated: true)
+        }
         var dictionary:Dictionary<String,String> = [:]
         dictionary["paymentMethodType"] = paymentMethodType.rawValue
         dictionary["paymentToken"] = token.paymentToken
@@ -93,13 +101,13 @@ public class SwiftYandexPaymentPlugin: NSObject, FlutterPlugin, TokenizationModu
                                               isLoggingEnabled: true,
                                               savePaymentMethod: .on)
     let inputData: TokenizationFlow = .tokenization(tokenizationModuleInputData)
-    let viewController = TokenizationAssembly.makeModule(inputData: inputData,
+    viewController = TokenizationAssembly.makeModule(inputData: inputData,
                                                          moduleOutput: self)
     //viewController.present(viewController, animated: true, completion: nil)
    /* if let navigationController = UIApplication.shared.keyWindow?.rootViewController as? UINavigationController {
                navigationController.pushViewController(viewController, animated: true)
            }
-  */ UIApplication.shared.delegate?.window??.rootViewController?.present(viewController, animated: true, completion: nil)
+     */ UIApplication.shared.delegate?.window??.rootViewController?.present(viewController!, animated: true, completion: nil)
     //result(data)
     }
 }
