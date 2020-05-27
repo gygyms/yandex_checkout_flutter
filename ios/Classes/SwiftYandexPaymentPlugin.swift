@@ -27,7 +27,7 @@ extension UIViewController: TokenizationModuleOutput {
 }
 public class SwiftYandexPaymentPlugin: NSObject, FlutterPlugin, TokenizationModuleOutput {
     var flutterResult:FlutterResult?
-    var viewController:UIViewController?
+    var viewController:(UIViewController & TokenizationModuleInput)? = nil
     public func didFinish(on module: TokenizationModuleInput, with error: YandexCheckoutPaymentsError?) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
@@ -36,7 +36,12 @@ public class SwiftYandexPaymentPlugin: NSObject, FlutterPlugin, TokenizationModu
     }
 
     public func didSuccessfullyPassedCardSec(on module: TokenizationModuleInput) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
 
+            // Now close tokenization module
+            self.viewController!.dismiss(animated: true)
+        }
     }
 
     public func tokenizationModule(_ module: TokenizationModuleInput, didTokenize token: Tokens, paymentMethodType: PaymentMethodType) {
@@ -48,9 +53,12 @@ public class SwiftYandexPaymentPlugin: NSObject, FlutterPlugin, TokenizationModu
         dictionary["paymentMethodType"] = paymentMethodType.rawValue
         dictionary["paymentToken"] = token.paymentToken
         flutterResult!(dictionary)
+        //needsConfirmPayment(requestUrl: "https://coffeewant.ru/kassa/index.php?token="+token.paymentToken)
     }
 
-
+    func needsConfirmPayment(requestUrl: String) {
+        self.viewController!.start3dsProcess(requestUrl: requestUrl)
+    }
 
 
   public static func register(with registrar: FlutterPluginRegistrar) {
@@ -89,7 +97,7 @@ public class SwiftYandexPaymentPlugin: NSObject, FlutterPlugin, TokenizationModu
         }
     }
 
-    let amount = Amount(value: 999.99, currency: .rub)
+    let amount = Amount(value: 2, currency: .rub)
     let tokenizationModuleInputData =
             TokenizationModuleInputData(clientApplicationKey: clientApplicationKey,
                                               shopName: shopName,
@@ -99,7 +107,7 @@ public class SwiftYandexPaymentPlugin: NSObject, FlutterPlugin, TokenizationModu
                                                 paymentMethodTypes: paymentMethodTypes, showYandexCheckoutLogo: true
                                                     ),
                                               isLoggingEnabled: true,
-                                              savePaymentMethod: .on)
+                                              savePaymentMethod: .userSelects)
     let inputData: TokenizationFlow = .tokenization(tokenizationModuleInputData)
     viewController = TokenizationAssembly.makeModule(inputData: inputData,
                                                          moduleOutput: self)
