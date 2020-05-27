@@ -45,10 +45,10 @@ public class SwiftYandexPaymentPlugin: NSObject, FlutterPlugin, TokenizationModu
     }
 
     public func tokenizationModule(_ module: TokenizationModuleInput, didTokenize token: Tokens, paymentMethodType: PaymentMethodType) {
-        DispatchQueue.main.async { [weak self] in
+        /*DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             self.viewController!.dismiss(animated: true)
-        }
+        }*/
         var dictionary:Dictionary<String,String> = [:]
         dictionary["paymentMethodType"] = paymentMethodType.rawValue
         dictionary["paymentToken"] = token.paymentToken
@@ -69,8 +69,9 @@ public class SwiftYandexPaymentPlugin: NSObject, FlutterPlugin, TokenizationModu
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     flutterResult = result
-    var data: [String: Any] = [:]
     var args:Dictionary = call.arguments as! Dictionary<String, Any?>
+    if(call.method=="showYandexPayment"){
+    var data: [String: Any] = [:]
     data["paymentToken"]="iOS " + UIDevice.current.systemVersion;
     data["paymentMethodType"]="BANK_CARD";
     let clientApplicationKey = args["clientApplicationKey"] as! String
@@ -117,5 +118,10 @@ public class SwiftYandexPaymentPlugin: NSObject, FlutterPlugin, TokenizationModu
            }
      */ UIApplication.shared.delegate?.window??.rootViewController?.present(viewController!, animated: true, completion: nil)
     //result(data)
+    }
+    if(call.method=="confirm"){
+        let url = args["url"] as? String ?? ""
+        needsConfirmPayment(requestUrl: url)
+    }
     }
 }
