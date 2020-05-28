@@ -9,6 +9,8 @@ import java.util.*
 
 private const val CHANNEL = "example.com/yandex"
 private const val REQUEST_TOKENIZE_CODE = 99
+private const val REQUEST_CONFIRMATION_CODE = 98
+
 const val PAYMENT_CHANNEL_METHOD = "showYandexPayment"
 const val CONFIRMATION_CHANNEL_METHOD = "confirm"
 
@@ -52,7 +54,7 @@ class YandexCheckoutFlutter {
                 registrar.activity(),
                 url
         )
-        registrar.activity().startActivityForResult(intent, 1)
+        registrar.activity().startActivityForResult(intent, REQUEST_CONFIRMATION_CODE)
     }
 
     private fun showYandexPayment(paymentParameters: PaymentParameters) {
@@ -68,18 +70,27 @@ class YandexCheckoutFlutter {
     private fun onActivityResult(
             requestCode: Int, resultCode: Int, data: Intent?
     ) : Boolean {
-        if (requestCode != REQUEST_TOKENIZE_CODE) return false
+        //    if (requestCode != REQUEST_TOKENIZE_CODE || requestCode != REQUEST_CONFIRMATION_CODE) return false
 
         when (resultCode) {
             Activity.RESULT_OK -> {
-                if (data != null) {
-                    val tokenizationResult = Checkout.createTokenizationResult(data)
-                    channelResult?.success(mapOf(
-                            "paymentMethodType" to tokenizationResult.paymentMethodType.toString(),
-                            "paymentToken" to tokenizationResult.paymentToken
-                    ))
-                } else {
-                    channelResult?.error("RESULT_NULL", "Received tokenization result is null", null)
+                if (requestCode == REQUEST_TOKENIZE_CODE) {
+                    if (data != null) {
+                        val tokenizationResult = Checkout.createTokenizationResult(data)
+                        channelResult?.success(mapOf(
+                                "paymentMethodType" to tokenizationResult.paymentMethodType.toString(),
+                                "paymentToken" to tokenizationResult.paymentToken
+                        ))
+                    } else {
+                        channelResult?.error("RESULT_NULL", "Received tokenization result is null", null)
+                    }
+                }
+                if (requestCode == REQUEST_CONFIRMATION_CODE) {
+                    if (data != null) {
+                        channelResult?.success("ok")
+                    } else {
+                        channelResult?.error("RESULT_NULL", "Received tokenization result is null", null)
+                    }
                 }
             }
 

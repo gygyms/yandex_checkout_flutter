@@ -24,12 +24,11 @@ class Checkout {
     return createTokenize(paymentParameters).catchError((e) => null);
   }
 
-  static void confirmPayment(
+  static Future<String> confirmPayment(
       String url
       ){
     var map = Map();
     map["url"] = url;
-    platform.invokeMethod('confirm', map)
-        .then((r) => TokenizationResult.fromMap(r));
+    return platform.invokeMethod('confirm', map);
   }
 }
