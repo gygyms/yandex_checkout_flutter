@@ -1,6 +1,6 @@
 # yandex_checkout
 
-A Yandex Checkout plugin for Flutter. (Note that there is an Android implementation only!)
+A Yandex Checkout plugin for Flutter.
 
 ## Getting Started
 
@@ -81,7 +81,3 @@ class _ExampleState extends State<Example> {
 }
 ```
 
-## TODO 
-1. Add test parameters
-2. Add ui parameters
-3. Add iOS implementation
